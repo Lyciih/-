@@ -11,8 +11,8 @@ all: a.out
 a.out: start.o uart.o hello.o 
 	$(CC) $(FLAG) -Ttext=0x80000000 -g start.o uart.o hello.o 
 
-start.o: start.S
-	$(CC) $(FLAG) -c start.S
+start.o: start.s
+	$(CC) $(FLAG) -c start.s
 
 hello.o: hello.c
 	$(CC) $(FLAG) -c hello.c
