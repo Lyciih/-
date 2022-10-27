@@ -149,16 +149,24 @@ void * malloc(int nbytes)
 
 void free(void *p)
 {
-	int offset = 0 ;
-	offset = (uint32_t)p - _malloc_start;
-	printf("%x\n",offset );
-	int quotient = offset / 4 ;
-	int remainder = offset % 4 ;
-	int start = byte_start;
+	int byte_offset = 0 ;
+	byte_offset = (uint32_t)p - _malloc_start;
+	printf("%x\n",byte_offset );
+	int quotient = byte_offset / 4 ;
+	int remainder = byte_offset % 4 ;
+	void *start = byte_start;
 	printf("%x\n",quotient );
 	printf("%x\n\n",remainder );
+	
 	for(int i = 0; i < quotient; i++)
 	{
-
+		printf("%x\n", start);
+		*start = 0;
+		start++;
+	}
+	
+	for(int i = 0;i < remainder; i++)
+	{
+		
 	}
 }
