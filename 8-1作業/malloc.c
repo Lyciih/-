@@ -72,6 +72,8 @@ void * malloc(int nbytes)
 	int found = 0;
 	uint32_t start = 0;
 	uint8_t start_offset = 0;
+	int start_offset_count = 0;
+	int start_i = 0;
 	uint8_t temp = 0; 
 	
 	for(int i = 0; i <= ( 4 * PAGE_SIZE)-nbytes; i++)
@@ -94,8 +96,10 @@ void * malloc(int nbytes)
 				found++;
 				if(found == 1)
 				{
+					start_i = i;
 					start = count;
 					start_offset = offset;
+					start_offset_count = offset_count;
 				}
 				if(found == nbytes)
 				{
@@ -132,7 +136,7 @@ void * malloc(int nbytes)
 						start++;											
 					}
 					printf("END\n\n");
-					return (void *)(_malloc_start + ( i * 4 ) + offset_count);
+					return (void *)(_malloc_start + start_i*4 + start_offset_count);
 				}
 			}
 			offset = (offset << 2);
@@ -141,4 +145,11 @@ void * malloc(int nbytes)
 		count++;
 		printf("NEXT %x\n\n", count);		
 	}
+}
+
+void free(void *p)
+{
+	int offset = 0 ;
+	offset = (uint32_t)p - _malloc_start;
+	printf("%x\n",offset );
 }
