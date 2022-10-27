@@ -151,7 +151,7 @@ void page_free(void *p)
 
 void page_test()
 {
-    printf("\npage_test\n");
+    //printf("\npage_test\n");
 	void *p = page_alloc(2);
 	printf("p = 0x%x\n", p);
 	//page_free(p);

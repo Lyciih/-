@@ -53,37 +53,38 @@ int uart_puts(char* s)
 int uart_r()
 {
     char ch;
-    char temp[255];
+    //因為是使用輪詢的方式，待會會進入無窮迴圈。為了能夠在輸入exit時離開迴圈，用一個字串來储存比對命令的字元
+    char temp[255];       
     int count = 0;
-    while(1)
+    while(1)            //進入無窮輪詢迴圈
     {
-        if(*LSR & (1 << 0) == 1)
+        if(*LSR & (1 << 0) == 1)        //檢查LSR暫存器的第一個bit是否為1，1代表接收字元完成
         {
-            ch = *RHR;
-            if(ch == '\r')
+            ch = *RHR;                  //讀取RHR中收到的字元到ch變數
+            if(ch == '\r')              //如果ch中的字元是 Enter (也就是 \r )
             {
-                uart_c('\n');
-                if(temp[0] == 'e' && temp[1] == 'x' && temp[2] == 'i' && temp[3] == 't')
+                uart_c('\n');           //則使用uart_c傳送一個換行符號 ( \n )
+
+                //下面的if，比對用戶輸入 Enter 之前所輸入的字串是不是exit
+                if(temp[0] == 'e' && temp[1] == 'x' && temp[2] == 'i' && temp[3] == 't')        
                 {
-                    uart_puts("quit\n");
-                    for(int i=1;i<count;i++)
-                    {
-                        temp[i] = ' ';
-                    }
-                    count = 0;
-                    break;
+                    //用戶輸入是exit的話，用uart_puts()，傳送 quit 到用戶的螢幕上
+                    uart_puts("quit\n"); 
+                    //離開迴圈
+                    break;                      
                 }
-                for(int i=1;i<count;i++)
+
+                for(int i=1;i<count;i++)        //離開迴圈前，把temp[]裡面的字都清空
                 {
                     temp[i] = ' ';
                 }
-                count = 0;
+                count = 0;                      //count重置為0，給輸入Enter後的下一行使用
             }
-            else
+            else                        //如果不是 Enter 符號 ( \r )
             {
-                uart_c(ch);
-                temp[count] = ch;
-                count++;
+                uart_c(ch);             //就把收到的資料用 uart_c(ch) 傳回使用者的螢幕上
+                temp[count] = ch;       //另外也把 ch 存到 temp[255] 中
+                count++;                //count做為 temp[255] 的位置計數器，往前進一個，用來存下個字元
             }
         }
     }
