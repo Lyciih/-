@@ -104,6 +104,7 @@ void * malloc(size_t size)
 		}
 		count++;		
 	}
+	printf("not enough space");
 }
 
 
