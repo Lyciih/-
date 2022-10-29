@@ -4,7 +4,7 @@ extern void uart_r(void);                   //extern void 告訴編譯器 uart_p
 
 extern void page_init(void);
 extern void page_test(void);
-extern void malloc_init(void);
+extern void malloc_init(int page);
 extern void * malloc(int nbytes);
 extern void free(void *p);
 
@@ -21,9 +21,9 @@ void main(void)
     page_test();
 
     printf("\n----- malloc init -----\n");
-    malloc_init();
+    malloc_init(10);                                                //申請malloc初始化所用到的page數，必須是5的倍數
 
-    printf("\n-----malloc test-----\n");
+    printf("\n-----malloc test-----\n");                            //測試malloc跟free的功能是否正常
     void *test1 = malloc(4);
     void *test2 = malloc(1);
     void *test3 = malloc(2);
@@ -54,7 +54,6 @@ void main(void)
     free(test5);
     free(test6);
     free(test7);
-
 
     printf("\n----- malloc test success -----\n");
 
