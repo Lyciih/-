@@ -10,11 +10,13 @@ GDB = riscv64-unknown-elf-gdb
 SRCS_O = \
 	./objs/start.o \
 	./objs/memory.o \
+	./objs/context_switch.o \
 	./objs/os.o \
 	./objs/uart.o \
 	./objs/printf.o \
 	./objs/page.o \
 	./objs/malloc.o \
+	./objs/schedule.o
 
 INCLUDE = -I include
 
