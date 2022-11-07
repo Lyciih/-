@@ -53,8 +53,6 @@ void main(void)
 
     schedule_init();
     printf("\n\n\n----- schedule start -----\n\n\n");
-    //利用 sys_switch() 的特性，讓進入 schedule() 前的狀態能保存在 kernel_context 裡
-    sys_switch(&kernel_context, &kernel_context);
     schedule();
 
     printf("\n----- uart polling input -----\n");

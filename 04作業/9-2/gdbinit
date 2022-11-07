@@ -1,0 +1,4 @@
+set disassemble-next-line on
+b sys_switch
+target remote : 1234
+c

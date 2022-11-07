@@ -29,13 +29,10 @@ void malloc_init(int page);
 void * malloc(int nbytes);
 void free(void *p);
 
-/* schedule */  
-struct context kernel_context;        
+/* schedule */          
 void schedule_init(void);
 void schedule(void);
 int task_create(void (*start_routin)(char *param), char *param, uint8_t priority);
-
-extern void sys_switch(struct context *old, struct context *new);
 
 
 
