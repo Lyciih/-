@@ -6,9 +6,6 @@ extern void switch_to(struct context *next);
 #define MAX_TASKS 10
 #define STACK_SIZE 1024
 
-char a[] = "haha";
-char b[] = "kk";
-
 
 
 uint8_t task_stack[MAX_TASKS][STACK_SIZE];
@@ -138,7 +135,7 @@ void user_task9(char* sentence)
 
 
 
-//將兩個task初始化
+//將所有task初始化
 void schedule_init()
 {  
     task_create(user_task0, "a", 2);
