@@ -175,7 +175,7 @@ void schedule()
     {
         if(task_finish[i] == 1)
         {
-            printf("|\033[1;31;40m   %d    \033[0;37;40m", task_finish[i]);
+            printf("|\033[1;31;1m   %d    \033[0;37;1m", task_finish[i]);
         }
         else
         {
