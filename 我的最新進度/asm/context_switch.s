@@ -74,7 +74,8 @@
 .globl switch_to		
 .align 4
 switch_to:						# a0 代表第一個參數，是指向第一個task的context的指針
-	mv	t6, a0					#把 a0 寫入t6，用來當作載入第一個task的context的基址			
+	mv	t6, a0					#把 a0 寫入t6，用來當作載入第一個task的context的基址
+	csrw mscratch, a0			
 	reg_restore t6				#利用 t6 當基址載入第一個task的context
     ret							#用ra覆蓋PC，跳到task的起始位置開始執行
 
@@ -93,7 +94,7 @@ sys_switch:
 								#以上完成存context的動作，下一階段開始載入目標task的context
 
 								# a1 代表第二個參數，是指向下一個task的context的指針
-	mv	t6, a1					#把 a1 寫入t6
+	mv	t6, a1					#把 a1 寫入t6	
 	reg_restore t6				#用 t6 中的地址載入下一個task的context
     ret							#用ra覆蓋PC，跳到下一個task的起始位置開始執行
 .end

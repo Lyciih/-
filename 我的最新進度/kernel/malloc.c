@@ -51,7 +51,7 @@ void malloc_init(int page)
 	return;
 }
 
-void * malloc(size_t size)
+void * malloc(int size)
 {
 	//使用malloc前要先檢查malloc初始化是否成功，malloc_init_success 是 0 ，就代表失敗並退出
 	if(malloc_init_success != 1)

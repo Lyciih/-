@@ -1,21 +1,44 @@
 #ifndef __MYOS_H__
 #define __MYOS_H__
 
-#include "types.h" //作業系統會用到的變數類型
+
+
+//作業系統會用到的變數類型
+#include "types.h" 
+
+
+//uart
+void uart_init(void);
+int uart_putc(char ch);
+int uart_puts(char *s);
+void uart_r(void);
 
 //printf會用到的庫
 #include <stddef.h>
 #include <stdarg.h>
-
-extern int uart_putc(char ch);
-extern int uart_puts(char *s);
-extern void uart_r(void);
-
-extern int printf(const char* s, ...);
+int printf(const char* s, ...);
 
 /* memory management */
-extern void *page_alloc(int npages);
-extern void page_free(void *p);
+void page_init(void);
+void page_test(void);
+void *page_alloc(int npages);
+void page_free(void *p);
+
+/* malloc */
+void malloc_init(int page);
+void * malloc(int nbytes);
+void free(void *p);
+
+/* schedule */          
+void schedule_init(void);
+void schedule(void);
+int task_create(void (*start_routin)(char *param), char *param, uint8_t priority);
+void task_exit(void);
+
+#include"riscv.h"
+void trap_init(void);
+void trap_test(void);
+
 
 struct context {
 	/* ignore x0 */

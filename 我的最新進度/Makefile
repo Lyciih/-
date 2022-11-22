@@ -11,12 +11,14 @@ SRCS_O = \
 	./objs/start.o \
 	./objs/memory.o \
 	./objs/context_switch.o \
+	./objs/trap_vector.o \
 	./objs/os.o \
 	./objs/uart.o \
 	./objs/printf.o \
 	./objs/page.o \
 	./objs/malloc.o \
-	./objs/schedule.o
+	./objs/schedule.o \
+	./objs/trap.o
 
 INCLUDE = -I include
 
@@ -34,8 +36,8 @@ a.out: $(SRCS_O)
 ./objs/%.o : ./asm/%.s
 	$(CC) $(FLAG) -c -o $@ $<
 
-./objs/%.o : ./kernel/%.c
-	$(CC) $(FLAG) $(INCLUDE) -c -o $@ $<
+./objs/%.o :  ./kernel/%.c
+	$(CC) $(FLAG) $(INCLUDE) -c -o $@ $<  
 
 ./objs/%.o : ./lib/%.c
 	$(CC) $(FLAG) $(INCLUDE) -c -o $@ $<
@@ -46,9 +48,7 @@ a.out: $(SRCS_O)
 
 .PHONY: clean
 clean:
-	rm -f ./objs/*.o
-	rm -f *.exe
-	rm -f *.out
+	rm -f ./objs/*.o *.exe *.out
 
 .PHONY: dump
 dump:

@@ -1,13 +1,5 @@
 #include"os.h"
-extern void uart_init(void);            //extern void 告訴編譯器 uart_init(void) 函數在其他檔案已被宣告
 
-extern void page_init(void);
-extern void page_test(void);
-extern void malloc_init(int page);
-extern void * malloc(int nbytes);
-extern void free(void *p);
-extern void schedule_init(void);
-extern void schedule(void);
 
 void main(void)
 {
@@ -59,9 +51,16 @@ void main(void)
     printf("\n----- malloc test success -----\n");
     printf("\n\n\n----- schedule_init -----\n");
 
+    printf("\n----- trap -----\n");
+    trap_init();
+
     schedule_init();
     printf("\n\n\n----- schedule start -----\n\n\n");
     schedule();
+
+
+
+
 
     printf("\n----- uart polling input -----\n");
     uart_puts("please input , and use Enter to newline , or use exit to quit\n");        //使用uart_puts函數傳輸 please input 字串
