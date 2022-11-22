@@ -9,7 +9,7 @@
 
 //uart
 void uart_init(void);
-int uart_putc(char ch);
+int uart_c(char ch);
 int uart_puts(char *s);
 void uart_r(void);
 

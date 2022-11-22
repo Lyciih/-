@@ -29,7 +29,7 @@ void task_exit()
 
 //第1個task
 void user_task1(char* santams)
-{
+{    
     printf("Task 1: Running...|%s\n", santams);
     uart_puts("                  |...\n");
     uart_puts("                     |...\n");
@@ -144,8 +144,10 @@ void schedule_init()
 
 void schedule()
 {
+    printf("\033[?25l");
     int max = 0;
     int temp = 0;
+    uart_puts("\E[H\E[J");
     printf("\n|   task   ");
     for(int i = 0; i< MAX_TASKS; i++)
     {
@@ -171,8 +173,15 @@ void schedule()
     printf("\n|  finish  ");
     for(int i = 0; i< MAX_TASKS; i++)
     {
+        if(task_finish[i] == 1)
+        {
+            printf("|\033[1;31;40m   %d    \033[0;37;40m", task_finish[i]);
+        }
+        else
+        {
         //顯示所有task是否被執行過的狀態
         printf("|   %d    ", task_finish[i]);
+        }
     }
     printf("|\n\n");
     
@@ -180,6 +189,7 @@ void schedule()
     //如果 context_priority[max]為0 且 task_finish[max] 也是0，代表所有任務都已經輪過一遍
     if(context_priority[max] == 0 && task_finish[max] == 0)
     {
+        task_delay(6000);
         for(int i = 0; i< MAX_TASKS; i++)
         {
             //將所有優先度不為 0 的 task 的完成狀態都重設為 0
@@ -189,6 +199,8 @@ void schedule()
             }
         }
         printf("***************************  task reset  **********************************\n");
+        task_delay(6000);
+        printf("\033[?25h");
     }
     //不是的話代表還有task沒做完，於是將下個 task 的 context 指針設為 max 所代表的task 然後switch_to()
     else
@@ -197,6 +209,7 @@ void schedule()
         struct context *next = &ctx_tasks[max];
         //將該task的task_finish設為1，代表已經做了
         task_finish[max] = 1;
+        printf("\033[?25h");
 	    switch_to(next);        
     }
 
