@@ -4,7 +4,7 @@
 
 
 //作業系統會用到的變數類型
-#include "types.h" 
+#include"types.h" 
 
 
 //uart
@@ -35,9 +35,6 @@ void schedule(void);
 int task_create(void (*start_routin)(char *param), char *param, uint8_t priority);
 void task_exit(void);
 
-#include"riscv.h"
-void trap_init(void);
-void trap_test(void);
 
 
 struct context {
@@ -74,6 +71,13 @@ struct context {
 	reg_t t5;
 	reg_t t6;
 };
+
+
+#include"riscv.h"
+void trap_init(void);
+void trap_test(void);
+
+#include"plic.h"
 
 
 #endif

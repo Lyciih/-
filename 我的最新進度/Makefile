@@ -18,7 +18,8 @@ SRCS_O = \
 	./objs/page.o \
 	./objs/malloc.o \
 	./objs/schedule.o \
-	./objs/trap.o
+	./objs/trap.o \
+	./objs/plic.o
 
 INCLUDE = -I include
 
