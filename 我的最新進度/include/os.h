@@ -12,7 +12,6 @@ void uart_init(void);
 int uart_putc(char ch);
 int uart_puts(char *s);
 void uart_r(void);
-int uart_getc(void);
 void uart_isr(void);
 
 
