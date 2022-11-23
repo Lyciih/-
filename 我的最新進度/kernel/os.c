@@ -54,6 +54,11 @@ void main(void)
     printf("\n----- trap -----\n");
     trap_init();
 
+    printf("\n----- plic -----\n");
+    plic_init();
+
+    //uart_get_interrupt();
+
     schedule_init();
     printf("\n\n\n----- schedule start -----\n\n\n");
     schedule();

@@ -9,9 +9,12 @@
 
 //uart
 void uart_init(void);
-int uart_c(char ch);
+int uart_putc(char ch);
 int uart_puts(char *s);
 void uart_r(void);
+int uart_getc(void);
+void uart_isr(void);
+
 
 //printf會用到的庫
 #include <stddef.h>
@@ -79,5 +82,8 @@ void trap_test(void);
 
 #include"plic.h"
 
+void plic_init(void);
+int plic_claim(void);
+void plic_complete(int irq);
 
 #endif

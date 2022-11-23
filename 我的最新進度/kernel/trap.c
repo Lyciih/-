@@ -7,6 +7,24 @@ void trap_init()
     w_mtvec((reg_t)trap_vector);
 }
 
+void external_interrupt_handler()
+{
+    int irq = plic_claim();
+
+    if(irq == UART0_IRQ){
+        uart_isr();
+    }
+    else if(irq)
+    {
+        printf("unexcepted interrupt irq = %d\n", irq);
+    }
+
+    if(irq)
+    {
+        plic_complete(irq);
+    }
+}
+
 reg_t trap_handler(reg_t epc, reg_t cause)
 {
     reg_t return_pc = epc;
@@ -25,7 +43,8 @@ reg_t trap_handler(reg_t epc, reg_t cause)
             break;
 
         case 11:
-            uart_puts("external interruption!\n");
+            //uart_puts("external interruption!\n");
+            external_interrupt_handler();
             break;
         
 
@@ -38,8 +57,9 @@ reg_t trap_handler(reg_t epc, reg_t cause)
     {        
         printf("Sync exceptions!, code = %d\n", cause_code);
         uart_puts("OOPS! What can I do!\n");
-        uart_puts("next time, this task will start at pc where exeception next\n");
-        return_pc += 4;
+        uart_puts("next time, this task will start at pc where exeception next rfsdfjlas dkjfdlskjfdklsfjdsklfjdslkfjslkdfjs ldklfj aldkjf lkdjf jdf dklfjdsflksjfk \n");
+        //asm volatile("wfi");
+        return return_pc += 4;
     }
     return return_pc;
 }

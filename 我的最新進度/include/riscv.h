@@ -43,4 +43,17 @@ static inline reg_t r_mie()
 #define MIE_MTIE (1 << 7)
 #define MIE_MSIE (1 << 3)
 
+
+static inline reg_t r_mstatus()
+{
+    reg_t x;
+    asm volatile("csrr %0, mstatus" : "=r" (x));
+    return x;
+}
+
+static inline void w_mstatus(reg_t x)
+{
+    asm volatile("csrw mstatus, %0" : : "r" (x));
+}
+
 #endif

@@ -1,7 +1,7 @@
 #include"os.h"
 
 extern void sys_switch(struct context *old, struct context *new);
-extern void switch_to(struct context *next);
+extern void switch_to(struct context *next, struct context *trap);
 
 #define MAX_TASKS 10
 #define STACK_SIZE 1024
@@ -9,11 +9,11 @@ extern void switch_to(struct context *next);
 
 uint8_t task_stack[MAX_TASKS][STACK_SIZE];
 struct context ctx_tasks[MAX_TASKS];
+struct context trap_context;
 uint8_t context_priority[MAX_TASKS];
 uint8_t task_finish[MAX_TASKS];
 
  int _top = 0;
- int _current = -1;
 
 
 void task_delay(volatile int count)
@@ -24,7 +24,7 @@ void task_delay(volatile int count)
 
 void task_exit()
 {
-    switch_to( &ctx_tasks[0]);
+    switch_to( &ctx_tasks[0], &trap_context);
 }
 
 //第1個task
@@ -142,6 +142,8 @@ void schedule_init()
     task_create(user_task9, "i", 8);
 }
 
+
+
 void schedule()
 {
     printf("\033[?25l");
@@ -210,7 +212,7 @@ void schedule()
         //將該task的task_finish設為1，代表已經做了
         task_finish[max] = 1;
         printf("\033[?25h");
-	    switch_to(next);        
+	    switch_to(next,  &trap_context);        
     }
 
 }
@@ -230,5 +232,6 @@ int task_create(void (*start_routin)(char *param), char *param, uint8_t priority
 		return -1;
 	}
 }
+
 
 

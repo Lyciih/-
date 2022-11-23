@@ -74,10 +74,12 @@
 .globl switch_to		
 .align 4
 switch_to:						# a0 代表第一個參數，是指向第一個task的context的指針
-	mv	t6, a0					#把 a0 寫入t6，用來當作載入第一個task的context的基址
-	csrw mscratch, a0			
+	csrw mscratch, a1
+	mv	t6, a0					#把 a0 寫入t6，用來當作載入第一個task的context的基址			
 	reg_restore t6				#利用 t6 當基址載入第一個task的context
     ret							#用ra覆蓋PC，跳到task的起始位置開始執行
+
+
 
 
 #--------------------------從task跳到task的程式----------------------------------
