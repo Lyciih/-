@@ -246,7 +246,8 @@ void schedule()
     }
 
 
-
+    printf("\033[?25h");
+    
     //如果 ((pcb_t *)max)->priority 為 0 且 ((pcb_t *)max)->finish 也是 0，代表所有任務都已經輪過一遍
     if(((pcb_t *)max)->priority == 0 && ((pcb_t *)max)->finish == 0)
     {
