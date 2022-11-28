@@ -57,8 +57,8 @@ reg_t trap_handler(reg_t epc, reg_t cause)
     {        
         printf("Sync exceptions!, code = %d\n", cause_code);
         uart_puts("OOPS! What can I do!\n");
-        uart_puts("next time, this task will start at pc where exeception next rfsdfjlas dkjfdlskjfdklsfjdsklfjdslkfjslkdfjs ldklfj aldkjf lkdjf jdf dklfjdsflksjfk \n");
-        //asm volatile("wfi");
+        uart_puts("next time, this task will start at pc where exeception next \n");
+        ((pcb_t *)current)->error = 1;
         return return_pc += 4;
     }
     return return_pc;
@@ -68,5 +68,5 @@ reg_t trap_handler(reg_t epc, reg_t cause)
 void trap_test()
 {
 	*(int *)0x00000000 = 100;
-	uart_puts("Yeah! I'm return back from trap!\n");
+	uart_puts("Yeah! I'm return back from trap!dslf;kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk\n");
 }

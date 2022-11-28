@@ -1,7 +1,7 @@
 #ifndef __MYOS_H__
 #define __MYOS_H__
 
-
+#define STACK_SIZE 1024
 
 //作業系統會用到的變數類型
 #include"types.h" 
@@ -31,6 +31,9 @@ void malloc_init(int page);
 void * malloc(int nbytes);
 void free(void *p);
 
+
+#include<dllSpec.h>
+
 /* schedule */          
 void schedule_init(void);
 void schedule(void);
@@ -39,7 +42,7 @@ void task_exit(void);
 
 
 
-struct context {
+typedef struct context {
 	/* ignore x0 */
 	reg_t ra;
 	reg_t sp;
@@ -72,7 +75,22 @@ struct context {
 	reg_t t4;
 	reg_t t5;
 	reg_t t6;
-};
+}context;
+
+
+
+typedef struct pcb{
+	dllNode_t node;
+	context context;
+	uint8_t stack[STACK_SIZE];
+	int ID;
+	int priority;
+	int finish;
+	int error;	
+}pcb_t;
+
+dllNode_t * pcb_list;
+dllNode_t * current;
 
 
 #include"riscv.h"

@@ -19,7 +19,8 @@ SRCS_O = \
 	./objs/malloc.o \
 	./objs/schedule.o \
 	./objs/trap.o \
-	./objs/plic.o
+	./objs/plic.o \
+	./lib/double_linked_list.a \
 
 INCLUDE = -I include
 
