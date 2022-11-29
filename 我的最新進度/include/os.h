@@ -8,11 +8,13 @@
 
 
 //uart
+char trap_temp[255];
 void uart_init(void);
 int uart_putc(char ch);
 int uart_puts(char *s);
 void uart_r(void);
 void uart_isr(void);
+
 
 
 //printf會用到的庫
@@ -39,6 +41,8 @@ void schedule_init(void);
 void schedule(void);
 int task_create(void (*start_routin)(char *param), char *param, uint8_t priority);
 void task_exit(void);
+
+
 
 
 
@@ -77,7 +81,13 @@ typedef struct context {
 	reg_t t6;
 }context;
 
+void switch_to(struct context *next, struct context *trap);
 
+#include"hwtimer.h"
+void timer_init(void);
+void timer_handle(void);
+void clock(void);
+void timer_load(int interval);
 
 typedef struct pcb{
 	dllNode_t node;
@@ -91,6 +101,8 @@ typedef struct pcb{
 
 dllNode_t * pcb_list;
 dllNode_t * current;
+pcb_t * manage;
+struct context trap_context;
 
 
 #include"riscv.h"
@@ -102,5 +114,7 @@ void trap_test(void);
 void plic_init(void);
 int plic_claim(void);
 void plic_complete(int irq);
+
+
 
 #endif

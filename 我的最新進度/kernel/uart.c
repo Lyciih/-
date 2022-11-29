@@ -111,7 +111,7 @@ int uart_getc(void)
 
 
 char trap_ch;
-char trap_temp[255];
+
 int trap_count = 0;
 
 void uart_isr(void)
@@ -128,12 +128,17 @@ void uart_isr(void)
             if(trap_temp[0] == 'e' && trap_temp[1] == 'x' && trap_temp[2] == 'i' && trap_temp[3] == 't' && trap_temp[4] == ' ')        
             {
                 //用戶輸入是exit的話，用uart_puts()，傳送 quit 到用戶的螢幕上
-                uart_puts("quit\n"); 
+                uart_puts("quit\n");
+                for(int i = 0 ;i < trap_count ; i++)        //離開迴圈前，把temp[]裡面的字都清空
+                {
+                    trap_temp[i] = ' ';
+                }
+                trap_count = 0; 
                 //離開迴圈
                 break;                      
             }
 
-            for(int i = 1 ;i < trap_count ; i++)        //離開迴圈前，把temp[]裡面的字都清空
+            for(int i = 0 ;i < trap_count ; i++)        //離開迴圈前，把temp[]裡面的字都清空
             {
                 trap_temp[i] = ' ';
             }
@@ -142,7 +147,6 @@ void uart_isr(void)
         else                        //如果不是 Enter 符號 ( \r )
         {
             trap_temp[trap_count] = trap_ch;       //另外也把 ch 存到 temp[255] 中
-            printf("%s\n", trap_temp);             //就把收到的資料用 uart_c(ch) 傳回使用者的螢幕上
             trap_count++;                //count做為 temp[255] 的位置計數器，往前進一個，用來存下個字元
         }
     }

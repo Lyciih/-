@@ -1,16 +1,16 @@
 #include"os.h"
 
-extern void switch_to(struct context *next, struct context *trap);
+
 
 
 
 int process_ID = 0;
 
-pcb_t * manage;
 
 
 
-struct context trap_context;
+
+
 
 
 
@@ -32,7 +32,7 @@ void user_task1(char* santams)
     uart_puts("                  |...\n");
     uart_puts("                     |...\n");
     uart_puts("                        |...\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 //第2個task
@@ -42,8 +42,8 @@ void user_task2(char* santams)
     uart_puts("                        ...|\n");
     uart_puts("                     ...|\n");
     uart_puts("                  ...|\n");
-    task_delay(6000);
     trap_test();
+    asm volatile("wfi");
     task_exit();
 }
 
@@ -54,7 +54,7 @@ void user_task3(char* santams)
     uart_puts("                                   |...\n");
     uart_puts("                                      |...\n");
     uart_puts("                                         |...\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 //第4個task
@@ -64,7 +64,7 @@ void user_task4(char* santams)
     uart_puts("                                         ...|\n");
     uart_puts("                                      ...|\n");
     uart_puts("                                   ...|\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 
@@ -75,7 +75,7 @@ void user_task5(char* santams)
     uart_puts("                                                       |...\n");
     uart_puts("                                                          |...\n");
     uart_puts("                                                             |...\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 //第6個task
@@ -85,7 +85,7 @@ void user_task6(char* santams)
     uart_puts("                                                             ...|\n");
     uart_puts("                                                          ...|\n");
     uart_puts("                                                       ...|\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 
@@ -96,7 +96,7 @@ void user_task7(char* santams)
     uart_puts("                                                                           |...\n");
     uart_puts("                                                                              |...\n");
     uart_puts("                                                                                 |...\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 //第8個task
@@ -106,7 +106,7 @@ void user_task8(char* santams)
     uart_puts("                                                                                 ...|\n");
     uart_puts("                                                                              ...|\n");
     uart_puts("                                                                           ...|\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 
@@ -117,7 +117,7 @@ void user_task9(char* santams)
     uart_puts("                                                                                               |...\n");
     uart_puts("                                                                                                  |...\n");
     uart_puts("                                                                                                     |...\n");
-    task_delay(6000);
+    asm volatile("wfi");
     task_exit();
 }
 
@@ -156,7 +156,7 @@ void schedule_init()
 void schedule()
 {
     int task_count = DLL_num_nodes(pcb_list);
-    printf("\033[?25l");
+    //printf("\033[?25l");
     dllNode_t * max = NULL;
     int temp = 0;
     uart_puts("\E[H\E[J");
@@ -232,6 +232,8 @@ void schedule()
         }
     }
     printf("|\n\n");
+    clock();
+    printf(":%s", trap_temp);
 
 
     current = pcb_list;
@@ -246,25 +248,12 @@ void schedule()
     }
 
 
-    printf("\033[?25h");
     
+
     //如果 ((pcb_t *)max)->priority 為 0 且 ((pcb_t *)max)->finish 也是 0，代表所有任務都已經輪過一遍
     if(((pcb_t *)max)->priority == 0 && ((pcb_t *)max)->finish == 0)
     {
-        task_delay(6000);
-        current = pcb_list;
-        while(current->next != NULL)
-        {
-            current = DLL_next_node(current);
-            //將所有優先度不為 0 的 task 的完成狀態都重設為 0
-            if(((pcb_t *)current)->priority != 0)
-            {
-                ((pcb_t *)current)->finish = 0 ;
-            }
-        }
-        printf("***************************  task reset  **********************************\n");
-        task_delay(6000);
-        printf("\033[?25h");
+        asm volatile("wfi");
     }
     //不是的話代表還有task沒做完，於是將下個 task 的 context 指針設為 max 所代表的task 然後switch_to()
     else
@@ -273,7 +262,6 @@ void schedule()
         struct context *next = &(((pcb_t *)max)->context);
         //將該task的task_finish設為1，代表已經做了
         ((pcb_t *)max)->finish = 1;
-        printf("\033[?25h");
         current = max;
 	    switch_to(next,  &trap_context);        
     }    

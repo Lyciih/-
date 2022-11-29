@@ -57,7 +57,8 @@ void main(void)
     printf("\n----- plic -----\n");
     plic_init();
 
-    //uart_get_interrupt();
+    printf("\n----- timer -----\n");
+    timer_init();
 
     schedule_init();
     printf("\n\n\n----- schedule start -----\n\n\n");

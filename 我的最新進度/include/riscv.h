@@ -3,6 +3,16 @@
 
 #include"types.h"
 
+static inline reg_t r_mhartid()
+{
+    
+    reg_t x;
+    asm volatile("csrr %0, mhartid" : "=r" (x));
+    return x;
+    printf("123\n");
+}
+
+
 static inline void w_mtvec(reg_t x)
 {
     asm volatile("csrw mtvec, %0" : : "r" (x));
@@ -55,5 +65,7 @@ static inline void w_mstatus(reg_t x)
 {
     asm volatile("csrw mstatus, %0" : : "r" (x));
 }
+
+
 
 #endif

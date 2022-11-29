@@ -20,6 +20,7 @@ SRCS_O = \
 	./objs/schedule.o \
 	./objs/trap.o \
 	./objs/plic.o \
+	./objs/hwtimer.o \
 	./lib/double_linked_list.a \
 
 INCLUDE = -I include
