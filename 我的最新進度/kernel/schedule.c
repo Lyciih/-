@@ -6,7 +6,10 @@
 
 int process_ID = 0;
 
-
+dllNode_t * pcb_list;
+dllNode_t * current;
+pcb_t * manage;
+struct context trap_context;
 
 
 

@@ -99,10 +99,10 @@ typedef struct pcb{
 	int error;	
 }pcb_t;
 
-dllNode_t * pcb_list;
-dllNode_t * current;
-pcb_t * manage;
-struct context trap_context;
+extern dllNode_t * pcb_list;
+extern dllNode_t * current;
+extern pcb_t * manage;
+extern struct context trap_context;
 
 
 #include"riscv.h"
