@@ -111,7 +111,7 @@ int uart_getc(void)
 
 
 char trap_ch;
-
+char trap_temp[255];
 int trap_count = 0;
 
 void uart_isr(void)

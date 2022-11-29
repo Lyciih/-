@@ -8,7 +8,7 @@
 
 
 //uart
-char trap_temp[255];
+extern char trap_temp[255];
 void uart_init(void);
 int uart_putc(char ch);
 int uart_puts(char *s);
