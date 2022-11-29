@@ -131,7 +131,7 @@ void uart_isr(void)
                 uart_puts("quit\n");
                 for(int i = 0 ;i < trap_count ; i++)        //離開迴圈前，把temp[]裡面的字都清空
                 {
-                    trap_temp[i] = ' ';
+                    trap_temp[i] = '\0';
                 }
                 trap_count = 0; 
                 //離開迴圈
@@ -140,7 +140,7 @@ void uart_isr(void)
 
             for(int i = 0 ;i < trap_count ; i++)        //離開迴圈前，把temp[]裡面的字都清空
             {
-                trap_temp[i] = ' ';
+                trap_temp[i] = '\0';
             }
             trap_count = 0;                      //count重置為0，給輸入Enter後的下一行使用
         }

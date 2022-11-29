@@ -159,7 +159,7 @@ void schedule_init()
 void schedule()
 {
     int task_count = DLL_num_nodes(pcb_list);
-    //printf("\033[?25l");
+    printf("\033[?25h");
     dllNode_t * max = NULL;
     int temp = 0;
     uart_puts("\E[H\E[J");
