@@ -1,19 +1,12 @@
 #include"os.h"
 
 
-
-
-
 int process_ID = 0;
 
 dllNode_t * pcb_list;
-dllNode_t * current;
+dllNode_t * current_task = NULL;
 pcb_t * manage;
 struct context trap_context;
-
-
-
-
 
 
 
@@ -25,7 +18,22 @@ void task_delay(volatile int count)
 
 void task_exit()
 {
+    ((pcb_t *)current_task)->finish = 1;
     switch_to( &(manage->context), &trap_context);
+}
+
+
+void software_interrupt()
+{
+    int id = r_mhartid();
+    *(uint32_t *)CLINT_MSIP(id) = 1;
+}
+
+void task_wait()
+{
+    ((pcb_t *)current_task)->waiting = 1;
+    ((pcb_t *)current_task)->finish = 0;
+    software_interrupt();
 }
 
 //第1個task
@@ -57,6 +65,7 @@ void user_task3(char* santams)
     uart_puts("                                   |...\n");
     uart_puts("                                      |...\n");
     uart_puts("                                         |...\n");
+    task_wait();
     asm volatile("wfi");
     task_exit();
 }
@@ -129,7 +138,7 @@ void user_task9(char* santams)
 void schedule_init()
 {
     pcb_list = DLL_init();
-    current = NULL;
+    current_task = NULL;
 
     manage = (pcb_t *)malloc(sizeof(pcb_t));
 	if (manage != NULL) {
@@ -158,105 +167,42 @@ void schedule_init()
 
 void schedule()
 {
+    /* enable machine-mode software interrupts. */
+	w_mie(r_mie() | MIE_MSIE);
     int task_count = DLL_num_nodes(pcb_list);
-    printf("\033[?25h");
     dllNode_t * max = NULL;
+    dllNode_t * target = pcb_list;
     int temp = 0;
-    uart_puts("\E[H\E[J");
-    current = pcb_list;
-    printf("\n| task ID  ");
-    while(current->next != NULL)
+    while(target->next != NULL)
     {
-        current = DLL_next_node(current);
-        printf("|   %d    ", ((pcb_t *)current)->ID);
-        
-    }
-    printf("|\n");
-    printf("------------");
-    for(int i = 0 ; i < task_count ; i++)
-    {
-        printf("---------");
-    }
-    printf("\n| priority ");
-    current = pcb_list;
-    while(current->next != NULL)
-    {
-        current = DLL_next_node(current);
-        //顯示所有task的優先級
-        printf("|   %d    ", ((pcb_t *)current)->priority);
+        target = DLL_next_node(target);
         //找到優先度最高的task，並且必須是沒有被做過的
-        if(((pcb_t *)current)->priority >= temp && ((pcb_t *)current)->finish != 1 && ((pcb_t *)current)->error == 0)
+        if(((pcb_t *)target)->priority >= temp && ((pcb_t *)target)->finish != 1 && ((pcb_t *)target)->error == 0 && ((pcb_t *)target)->waiting == 0)
         {
             //將最優先要做的task編號設給 max 變數
-            temp = ((pcb_t *)current)->priority;
-            max = current;
+            temp = ((pcb_t *)target)->priority;
+            max = target;
         }
     }
-    printf("|\n");
-    printf("------------");
-    for(int i = 0 ; i < task_count ; i++)
-    {
-        printf("---------");
-    }
-    printf("\n|  finish  ");
-    current = pcb_list;
-    while(current->next != NULL)
-    {
-        current = DLL_next_node(current);
-        if(((pcb_t *)current)->finish == 1)
-        {
-            printf("|\033[1;31;1m   %d    \033[0;37;1m", ((pcb_t *)current)->finish);
-        }
-        else
-        {
-        //顯示所有task是否被執行過的狀態
-        printf("|   %d    ", ((pcb_t *)current)->finish);
-        }
-    }
-    printf("|\n");
-    printf("------------");
-    for(int i = 0 ; i < task_count ; i++)
-    {
-        printf("---------");
-    }
-    printf("\n|  error   ");
-    current = pcb_list;
-    while(current->next != NULL)
-    {
-        current = DLL_next_node(current);
-        if(((pcb_t *)current)->error == 1)
-        {
-            printf("|\033[1;31;1m   %d    \033[0;37;1m", ((pcb_t *)current)->error);
-        }
-        else
-        {
-        //顯示所有task是否被執行過的狀態
-        printf("|   %d    ", ((pcb_t *)current)->error);
-        }
-    }
-    printf("|\n\n");
-    clock();
-    printf(":%s", trap_temp);
+  
 
-
-    current = pcb_list;
-    while(current->next != NULL)
-    {
-        current = DLL_next_node(current);
-        if(((pcb_t *)current)->error == 1 || ((pcb_t *)current)->finish == 1)
-        {
-            DLL_delete(current);
-            free(current);
-        }
-    }
-
-
-    
-
-    //如果 ((pcb_t *)max)->priority 為 0 且 ((pcb_t *)max)->finish 也是 0，代表所有任務都已經輪過一遍
+    //如果 ((pcb_t *)max)->priority 為 0 且 ((pcb_t *)max)->finish 也是 0，代表系統目前沒有其他任務要執行
     if(((pcb_t *)max)->priority == 0 && ((pcb_t *)max)->finish == 0)
     {
         printf("here\n");
+        /*
+        current = pcb_list;
+        while(current->next != NULL)
+        {
+            current = DLL_next_node(current);
+            if(((pcb_t *)current)->error == 1 || ((pcb_t *)current)->finish == 1)
+            {
+                DLL_delete(current);
+                free(current);
+            }
+        }
+        */
+
         asm volatile("wfi");
     }
     //不是的話代表還有task沒做完，於是將下個 task 的 context 指針設為 max 所代表的task 然後switch_to()
@@ -265,8 +211,9 @@ void schedule()
         printf("max = task %d\n\n\n", ((pcb_t *)max)->ID);
         struct context *next = &(((pcb_t *)max)->context);
         //將該task的task_finish設為1，代表已經做了
-        ((pcb_t *)max)->finish = 1;
-        current = max;
+        //((pcb_t *)max)->finish = 1;
+        target = max;
+        current_task = max;
 	    switch_to(next,  &trap_context);        
     }    
     
@@ -281,6 +228,7 @@ int task_create(void (*start_routin)(char *param), char *param, uint8_t priority
 	if (porcess != NULL) {
         porcess->ID = process_ID;
         porcess->finish = 0;
+        porcess->waiting = 0;
         porcess->node.next = NULL;
         porcess->node.prev = NULL;
         porcess->priority = priority;
