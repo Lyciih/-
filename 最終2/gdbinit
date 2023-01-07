@@ -1,0 +1,4 @@
+set disassemble-next-line on
+b create_alarm
+target remote : 1234
+c
