@@ -216,9 +216,6 @@ void schedule()
     {
         printf("max = task %d\n\n\n", ((pcb_t *)max)->ID);
         struct context *next = &(((pcb_t *)max)->context);
-        //將該task的task_finish設為1，代表已經做了
-        //((pcb_t *)max)->finish = 1;
-        //target = max;
         current_task = max;
 	    switch_to(next, ((pcb_t *)current_task)->pasue_address);        
     }    

@@ -39,15 +39,9 @@ void create_alarm(int tickets)
                 new->tickets -= before;
                 ((alarm_t *)temp)->tickets -= new->tickets;
                 return;
-            }
-             
+            }            
         }
-
-    }
-    
-
-
-    
+    }   
 }
 
 void show_alarm()
@@ -78,6 +72,7 @@ void alarm_handle()
         {
             ((pcb_t *)(((alarm_t *)temp)->owner))->waiting = 0;
             DLL_delete(temp);
+            free(temp);
         }
     }
 }
