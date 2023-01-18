@@ -1,0 +1,39 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make",
+            "type": "shell",
+            "command": "make"
+        },
+
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "rm -f *.o *.exe *.out"
+        },
+
+        {
+            "label": "dump",
+            "type": "shell",
+            "command": "riscv64-unknown-elf-objdump -D a.out"
+        },
+
+        {
+            "label": "qemu for gdb",
+            "type": "shell",
+            "command": "qemu-system-riscv32 -nographic -smp 1 -machine virt -bios none -kernel a.out -s -S",
+            "presentation": { 
+                "panel": "dedicated", 
+            } 
+        },
+
+        {
+            "label": "gdb",
+            "type": "shell",
+            "command": "riscv64-unknown-elf-gdb a.out -q -x gdbinit"
+        }
+    ]
+}
