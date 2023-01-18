@@ -17,9 +17,16 @@
                     "description": "啟用 gdb 的美化顯示",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
+                },
+
+                {
+                    "description": "啟用 gdb 的美化顯示",
+                    "text": "set disassemble-next-line on",
+                    "ignoreFailures": true
                 }
             ],
-            "miDebuggerServerAddress": "localhost:1234"
+            "miDebuggerServerAddress": "localhost:1234",
+            //"logging": {"trace": true, "traceResponse": true, "moduleLoad": true,  "engineLogging": true, },
         } 
     ]
 }
